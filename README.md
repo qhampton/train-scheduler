@@ -5,6 +5,8 @@
 
 Enter a train name, destination, star time, and frequency in minutes to see the next one that is showing up.
 
+Put in the military time and we will give you the common time. 
+
 ## Must Include:
 * Train Name
 * Destination 
