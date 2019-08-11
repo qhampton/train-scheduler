@@ -52,24 +52,31 @@ database.ref().on("child_added", function (childSnapshot) {
     var trainStart = childSnapshot.val().start;
     var trainfreq = childSnapshot.val().frequency;
     //time section calculation- Code this app to calculate when the next train will arrive; this should be relative to the current time.
-    var currentFre = parseInt(childSnapshot.val().frequency);
-    var startTime = moment(trainStart, "HH:mm").subtract(1, "years");
-    console.log(startTime);
-    console.log(trainStart);
     var currT = moment();
+    var nextTrain = "";
+    //pull frequency to be used on own
+    var currentFre = parseInt(childSnapshot.val().frequency);
+    //convert 
+    var startTime = moment(trainStart, "HH:mm").subtract(1, "years");
+    console.log("Start time: "+ trainStart);
+    console.log("Converted to: "+ startTime);
+    //take the time calculated in moments and subtract a year
     var timeCal = moment().subtract(1, "years");
+    //find the difference between the minutes in minutes
     var diffTime = currT.diff(moment(startTime), "minutes");
+    //how many minutes left
     var tRemainder = diffTime % currentFre;
     var minCount = currentFre - tRemainder;
-    var nextTrain = "";
+    //find the difference from the original start time to the converted time
     var btime = moment(startTime).diff(timeCal, "minutes");
     var bmin = Math.ceil(moment.duration(btime).asMinutes());
 
     if ((timeCal - startTime) < 0) {
+        //train hasnt started/come yet
         nextTrain = childSnapshot.val().start;
-        console.log("Before First Train");
         minCount = bmin;
     } else {
+        //put calculation into non military
         nextTrain = moment().add(minCount, "minutes").format("hh:mm A");
         minCount = currentFre - tRemainder;
     }
