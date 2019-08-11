@@ -26,5 +26,8 @@ firebase.initializeApp(firebaseConfig);
 //create events in Firebase every entry
 
     //create new row in table
+    
+    //time calculation- Code this app to calculate when the next train will arrive; this should be relative to the current time.
+
 
     //push to table
