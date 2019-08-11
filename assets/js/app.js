@@ -12,8 +12,8 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
-
 console.log("ran through firebase");
+
 //adding employees once submit button
 $("#addTrain").on("click", function (event) {
     console.log("button was pressed");
