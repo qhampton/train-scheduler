@@ -51,34 +51,35 @@ database.ref().on("child_added", function (childSnapshot) {
     var trainPlace = childSnapshot.val().destination;
     var trainStart = childSnapshot.val().start;
     var trainfreq = childSnapshot.val().frequency;
-    //time section calculation- Code this app to calculate when the next train will arrive; this should be relative to the current time.
-    var currT = moment();
+    //time section calculation- Code this app to calculate when the next train will arrive; this should be relative to the current time of the users computer
+    //users current time
+    var currentTime = moment();
     var nextTrain = "";
     //pull frequency to be used on own
     var currentFre = parseInt(childSnapshot.val().frequency);
     //convert 
     var startTime = moment(trainStart, "HH:mm").subtract(1, "years");
-    console.log("Start time: "+ trainStart);
-    console.log("Converted to: "+ startTime);
+    console.log("Start time: " + trainStart);
+    console.log("Converted to: " + startTime);
     //take the time calculated in moments and subtract a year
     var timeCal = moment().subtract(1, "years");
-    //find the difference between the minutes in minutes
-    var diffTime = currT.diff(moment(startTime), "minutes");
+    //find the difference between the minutes in minutes of user's time
+    var diffTime = currentTime.diff(moment(startTime), "minutes");
     //how many minutes left
     var tRemainder = diffTime % currentFre;
-    var minCount = currentFre - tRemainder;
+    var minNum = currentFre - tRemainder;
     //find the difference from the original start time to the converted time
-    var btime = moment(startTime).diff(timeCal, "minutes");
-    var bmin = Math.ceil(moment.duration(btime).asMinutes());
+    var betweenTime = moment(startTime).diff(timeCal, "minutes");
+    var betweenMinutes = Math.ceil(moment.duration(betweenTime).asMinutes());
 
     if ((timeCal - startTime) < 0) {
         //train hasnt started/come yet
         nextTrain = childSnapshot.val().start;
-        minCount = bmin;
+        minNum = betweenMinutes;
     } else {
         //put calculation into non military
-        nextTrain = moment().add(minCount, "minutes").format("hh:mm A");
-        minCount = currentFre - tRemainder;
+        nextTrain = moment().add(minNum, "minutes").format("hh:mm A");
+        minNum = currentFre - tRemainder;
     }
     //create new row in table
     var newRow = $("<tr>").append(
