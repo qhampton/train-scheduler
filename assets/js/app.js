@@ -15,7 +15,7 @@ var database = firebase.database();
 
 console.log("ran through firebase");
 //adding employees once submit button
-$("#addTrain").on("click", function(event) {
+$("#addTrain").on("click", function (event) {
     console.log("button was pressed");
     event.preventDefault();
     //grabs user input
@@ -40,27 +40,46 @@ $("#addTrain").on("click", function(event) {
     //clear inputs for next add
     $("#tName").val("");
     $("#tWhere").val("");
-    $("#tStart").val("");
+    $("#tTime").val("");
     $("#tMinutes").val("");
 });
 
 //create events in Firebase every entry
-database.ref().on("child_added", function(childSnapshot) {
+database.ref().on("child_added", function (childSnapshot) {
     console.log(childSnapshot.val());
     var trainName = childSnapshot.val().name;
     var trainPlace = childSnapshot.val().destination;
     var trainStart = childSnapshot.val().start;
     var trainfreq = childSnapshot.val().frequency;
     //time section calculation- Code this app to calculate when the next train will arrive; this should be relative to the current time.
+    var currentFre = parseInt(childSnapshot.val().frequency);
+    var startTime = moment(trainStart, "HH:mm").subtract(1, "years");
+    console.log(startTime);
+    console.log(trainStart);
+    var currT = moment();
+    var timeCal = moment().subtract(1, "years");
+    var diffTime = currT.diff(moment(startTime), "minutes");
+    var tRemainder = diffTime % currentFre;
+    var minCount = currentFre - tRemainder;
+    var nextTrain = "";
+    var btime = moment(startTime).diff(timeCal, "minutes");
+    var bmin = Math.ceil(moment.duration(btime).asMinutes());
 
+    if ((timeCal - startTime) < 0) {
+        nextTrain = childSnapshot.val().start;
+        console.log("Before First Train");
+        minCount = bmin;
+    } else {
+        nextTrain = moment().add(minCount, "minutes").format("hh:mm A");
+        minCount = currentFre - tRemainder;
+    }
     //create new row in table
     var newRow = $("<tr>").append(
         $("<td>").text(trainName),
         $("<td>").text(trainPlace),
-        $("<td>").text(trainStart),
         $("<td>").text(trainfreq),
-        // $("<td>").text(empfrequency),
-        // $("<td>").text(empBilled)
+        $("<td>").text(nextTrain),
+        $("<td>").text(minCount),
     );
     //push to table
     $("#new-trains").append(newRow);
