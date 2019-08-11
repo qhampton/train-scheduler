@@ -87,7 +87,7 @@ database.ref().on("child_added", function (childSnapshot) {
         $("<td>").text(trainPlace),
         $("<td>").text(trainfreq),
         $("<td>").text(nextTrain),
-        $("<td>").text(minCount),
+        $("<td>").text(minNum),
     );
     //push to table
     $("#new-trains").append(newRow);
