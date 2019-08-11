@@ -1,11 +1,11 @@
 # train-scheduler
-#HW 7: Firebase Assignment - Train Scheduler
+# HW 7: Firebase Assignment - Train Scheduler
 
-##Objective
+## Objective
 
 Enter a train name, destination, star time, and frequency in minutes to see the next one that is showing up.
 
-##Must Include:
+## Must Include:
 * Train Name
 * Destination 
 * First Train Time -- in military time
