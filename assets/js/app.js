@@ -55,31 +55,34 @@ database.ref().on("child_added", function (childSnapshot) {
     //users current time
     var currentTime = moment();
     var nextTrain = "";
-    //pull frequency to be used on own
-    var currentFre = parseInt(childSnapshot.val().frequency);
-    //convert 
+    //pull frequency to be used on own as a integer 
+    var currentFrequency = parseInt(childSnapshot.val().frequency);
+    //this is a workaround so that unix time is not at a negative start point (giving same start point for all moment times)
     var startTime = moment(trainStart, "HH:mm").subtract(1, "years");
     console.log("Start time: " + trainStart);
     console.log("Converted to: " + startTime);
-    //take the time calculated in moments and subtract a year
+    //same workaround as above but to current time instead
     var timeCal = moment().subtract(1, "years");
-    //find the difference between the minutes in minutes of user's time
+    //find the difference between right now and time calculated at start
     var diffTime = currentTime.diff(moment(startTime), "minutes");
-    //how many minutes left
-    var tRemainder = diffTime % currentFre;
-    var minNum = currentFre - tRemainder;
-    //find the difference from the original start time to the converted time
+    //the minutes of how long we have to wait for the next train
+    var tRemainder = diffTime % currentFrequency;
+    //how many minutes left for the next train
+    var minNum = currentFrequency - tRemainder;
+    //moment between the work around numbers above in minutes to be used in the duration
     var betweenTime = moment(startTime).diff(timeCal, "minutes");
+    //what is the minutes ve between the start of the train to the current time in minutes
     var betweenMinutes = Math.ceil(moment.duration(betweenTime).asMinutes());
 
+    //if the train is suppose to come now
     if ((timeCal - startTime) < 0) {
-        //train hasnt started/come yet
+        //minimum = between minutes - so if a train is coming now the next train is the set number minutes between trains
         nextTrain = childSnapshot.val().start;
         minNum = betweenMinutes;
     } else {
-        //put calculation into non military
+        //put calculation into non military of the next train 
         nextTrain = moment().add(minNum, "minutes").format("hh:mm A");
-        minNum = currentFre - tRemainder;
+        minNum = currentFrequency - tRemainder;
     }
     //create new row in table
     var newRow = $("<tr>").append(
